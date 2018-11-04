@@ -148,15 +148,6 @@ class PMM:
                - gammaln(np.sum(self.alpha)) + np.sum(gammaln(self.alpha)) \
                + np.sum(self.init_a * np.log(self.init_b) - gammaln(self.init_a)) \
                - np.sum(self.a * np.log(self.b) - gammaln(self.a))
-
-        print(first_term)
-        print(second_term)
-        print(third_term)
-        print(fourth_term)
-        print(fifth_term)
-        print(sixth_term)
-        print(seventh_term)
-        print(norm_terms)
         
         elbo += norm_terms
 
