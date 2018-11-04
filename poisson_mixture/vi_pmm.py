@@ -20,8 +20,8 @@ class PMM:
         self.update_params = update_params
 
         # hyperparameters
-        self.init_a = np.ones((self.K, 1))
-        self.init_b = np.ones((self.K, 1))
+        self.init_a = np.ones((self.K, 1)) / K 
+        self.init_b = np.ones((self.K, 1)) / K
         self.init_alpha = np.random.rand(K, 1)
 
         # variational parameters
@@ -40,11 +40,8 @@ class PMM:
 
         for i in range(self.maxiter):
 
-            # update variational params
-            self.run_e_step()
-
-            # update model params & calculate elbo
-            elbo = self.run_m_step(update_params=self.update_params)
+            # update variational params and calculate elbo
+            elbo = self.learn_vb(update_params=self.update_params)
             elbos.append(elbo)
 
             print("iteration: %d,\tlower bound: %.2f" % (i + 1, elbo))
@@ -63,7 +60,7 @@ class PMM:
         return elbos
 
 
-    def run_e_step(self):
+    def learn_vb(self, update_params=False):
         """
         update variational parameters
         """
@@ -87,15 +84,9 @@ class PMM:
             self.b[k] = np.sum(self.eta[:, k]) + self.init_b[k]
 
             self.alpha[k] = np.sum(self.eta[:, k]) + self.init_alpha[k]
-    
-        return
 
-
-    def run_m_step(self, update_params=False):
-        """
-        update hyper parameter using fixed point iteration
-        """
-
+        
+        # update hyperparameters
         if update_params is True:
             for k in range(self.K):
                 self.init_alpha[k] = (digamma(np.sum(self.eta[:, k] + self.alpha[k])) - digamma(np.sum(self.alpha))) \
@@ -107,9 +98,9 @@ class PMM:
                 self.init_b[k] = np.sum(self.eta[:, k] * self.init_a[k]) \
                                 / (self.a[k] * np.sum(self.eta[:, k]) - self.init_a[k])
                 """
-        # calculate elbo
+        
         elbo = self.calculate_elbo()
-
+    
         return elbo
 
 
