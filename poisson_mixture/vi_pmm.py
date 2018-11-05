@@ -128,14 +128,14 @@ class PMM:
 
         for k in range(self.K):
     
-            fourth_term += (self.init_a[k] - 1) * (digamma(self.a[k]) - np.log(self.b[k])) \
+            fourth_term -= (self.init_a[k] - 1) * (digamma(self.a[k]) - np.log(self.b[k])) \
                            - self.init_b[k] * (self.a[k] / self.b[k])
             
-            fifth_term -= (self.a[k] - 1) * (digamma(self.a[k]) - np.log(self.b[k])) \
+            fifth_term += (self.a[k] - 1) * (digamma(self.a[k]) - np.log(self.b[k])) \
                           - self.a[k]
             
-            sixth_term += (self.init_alpha[k] - 1) * (digamma(self.alpha[k]) - digamma(np.sum(self.alpha)))
-            seventh_term -= (self.alpha[k] - 1) * (digamma(self.alpha[k]) - digamma(np.sum(self.alpha)))
+            sixth_term -= (self.init_alpha[k] - 1) * (digamma(self.alpha[k]) - digamma(np.sum(self.alpha)))
+            seventh_term += (self.alpha[k] - 1) * (digamma(self.alpha[k]) - digamma(np.sum(self.alpha)))
 
 
 
@@ -149,7 +149,7 @@ class PMM:
                + np.sum(self.init_a * np.log(self.init_b) - gammaln(self.init_a)) \
                - np.sum(self.a * np.log(self.b) - gammaln(self.a))
         
-        elbo += norm_terms
+        elbo += -1 * norm_terms
 
         return elbo
 
